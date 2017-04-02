@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title><%=projectname %></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/stylesheets/header.css">
+    <link rel="stylesheet" href="/stylesheets/bootstrap.min.css">
+    <script type="text/javascript" src="/javascripts/jquery-3.1.1.min.js"></script>
+    <script type="text/javascript" src="/javascripts/custom.js"></script>
+    <script type="text/javascript" src="/javascripts/bootstrap.min.js"></script>
+</head>
+<body>
+<% include templates/header_auth.ejs %>
+<div class="container-fluid pos">
+    <% if (reg_success.length>0) { %>
+    <div class="alert alert-success"><%= reg_success %></div>
+    <% } %>
+    <% if (error.length>0) { %>
+    <div class="alert alert-danger"><%= error %></div>
+    <% } %>
+    <form method="post" action="/login">
+        <div class="form-group">
+            <label for="username">Username</label>
+            <input type="text" class="form-control" id="username" name="username" placeholder="Username">
+        </div>
+        <div class="form-group">
+            <label for="Password1">Password</label>
+            <input type="password" class="form-control" id="Password1" name="password" placeholder="Password">
+        </div>
+        <button type="submit" class="btn btn-default">Submit</button>
+    </form>
+</div>
+</body>
+</html>

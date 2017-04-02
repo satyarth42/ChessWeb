@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%=projectname %></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/stylesheets/header.css">
+    <link rel="stylesheet" href="/stylesheets/bootstrap.min.css">
+    <script type="text/javascript" src="/javascripts/jquery-3.1.1.min.js"></script>
+    <script type="text/javascript" src="/javascripts/custom.js"></script>
+    <script type="text/javascript" src="/javascripts/bootstrap.min.js"></script>
+  </head>
+  <body>
+  <% include templates/header_auth.ejs %>
+  <div class="container-fluid pos" align="center">
+      <% if (login.length>0) { %>
+    <div class="alert alert-success"><%= login %></div>
+      <% } %>
+      <% if (logout.length>0) { %>
+    <div class="alert alert-success"><%= logout %></div>
+      <% } %>
+    <div class="jumbotron">
+      <h1><%=++users_online%> users are online</h1>
+    </div>
+  </div>
+  </body>
+</html>
