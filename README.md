@@ -1,2 +1,2 @@
 # ChessWeb
-A LAN based chess playing portal on Node.js
+If you want to contribute then fork the repository, create a separate branch do edits if you want to and then pull.
