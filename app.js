@@ -11,13 +11,11 @@ var mongoose = require('mongoose');
 mongoose.connect('mongodb://127.0.0.1:27017/chessweb');
 
 var index = require('./routes/index');
-var settings = require('./routes/settings');
 
 var app = express();
 
 
 app.locals.projectname = "ChessWeb";
-app.locals.users_online = 0;
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -39,7 +37,6 @@ app.use(expressSession({
 app.use(passport.initialize());
 app.use(passport.session());
 app.use('/', index);
-app.use('/settings', settings);
 
 
 // catch 404 and forward to error handler
