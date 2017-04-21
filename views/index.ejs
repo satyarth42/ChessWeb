@@ -8,6 +8,13 @@
     <script type="text/javascript" src="/javascripts/jquery-3.1.1.min.js"></script>
     <script type="text/javascript" src="/javascripts/custom.js"></script>
     <script type="text/javascript" src="/javascripts/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/javascripts/socket.io.js"></script>
+    <script type="text/javascript">
+        var socket = io();
+        socket.on('users',function (data){
+            $('h1').html(data.count);
+        });
+    </script>
   </head>
   <body>
   <% include templates/header_auth.ejs %>
@@ -19,7 +26,7 @@
     <div class="alert alert-success"><%= logout %></div>
       <% } %>
     <div class="jumbotron">
-      <h1><%=count%> users are online</h1>
+      <h1></h1>
     </div>
   </div>
   </body>

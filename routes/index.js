@@ -5,22 +5,21 @@ var passport = require('passport'),
 var flash = require('connect-flash');
 var mongoose = require('mongoose');
 var use = require('../models/users');
-var readyusers = require('../models/ready_users');
 /* GET home page. */
 var session;
 router.get('/', function(req, res, next) {
     session = req.session;
-    console.log(req.session);
-    readyusers.count({},function(err,count){
-        res.render('index', { title: 'ChessWeb',session:session,logout:req.flash('log_out'),login:req.flash('success'),count:count});
-    });
+    console.log(session);
+        res.render('index', { title: 'ChessWeb',session:session,logout:req.flash('log_out'),login:req.flash('success')});
 });
 
 router.get('/register', function(req, res, next) {
+    session = req.session;
     res.render('register',{error:req.flash('error'),reg_error:req.flash('error_msg'),session:session});
 });
 
 router.get('/login', function(req, res, next) {
+    session = req.session;
     res.render('login', { title: 'Login',error:req.flash('error'),reg_success:req.flash('success_msg'),session:session});
 });
 
@@ -103,38 +102,27 @@ passport.deserializeUser(function(id, done) {
 });
 
 router.get('/logout', function(req, res) {
-    readyusers.remove({"_id":req.session.passport.user._id},function(err){
-        if(err) return console.log(err);
-    });
     req.logout();
     req.flash('log_out','You have successfully logged out');
     res.redirect('/');
 });
 
 router.get('/leaderboard', function(req, res, next) {
+    session = req.session;
     use.find({}).sort({points: -1}).exec(function(err, data) {
         res.render('leaderboard', {users:data,title:"Leaderboard",session:session});
     });
 });
 
 router.get('/settings', function(req, res, next) {
+    session = req.session;
     res.render('settings', { title: 'ChessWeb',session:session});
 });
 
 router.get('/ready/:id', function (req, res, next) {
-    readyusers.find({},function(err, data) {
-        res.render('readypage', {users:data,title:"Users ready to play",session:session});
-    });
-    if(req.session.passport && req.session.passport.user){
-        var readyuser = new readyusers({
-            "_id":req.session.passport.user._id,
-            "username":req.session.passport.user.name,
-            "points":req.session.passport.user.points
-        });
-        readyuser.save(function (err, updated) {
-            if (err) console.log(err);
-        });
-    }
+    session = req.session;
+    console.log(session.passport);
+    res.render('readypage', {title:"Users ready to play",session:session});
 });
 
 module.exports = router;

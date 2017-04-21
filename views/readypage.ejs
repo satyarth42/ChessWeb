@@ -7,7 +7,17 @@
     <script type="text/javascript" src="/javascripts/jquery-3.1.1.min.js"></script>
     <script type="text/javascript" src="/javascripts/custom.js"></script>
     <script type="text/javascript" src="/javascripts/bootstrap.min.js"></script>
-
+    <script type="text/javascript" src="/javascripts/socket.io.js"></script>
+    <script type="text/javascript">
+        var socket = io();
+        socket.on('newUser',function (data) {
+                $('table').append("<tr onclick=rdrct()><td>"+data.user.name+"<td>"+data.user.points+"</tr>");
+        });
+        function leave() {
+            socket.emit('leave',{user:{_id:'<%=session.passport.user._id%>'}});
+            window.location.href='/';
+        }
+    </script>
 </head>
 <body>
 <% include templates/header_auth.ejs %>
@@ -16,15 +26,23 @@
     <div class="alert alert-danger">You Need to Login to start playing</div>
     <%}%>
     <%if(session.passport && session.passport.user){%>
+    <div align="right">
+        <button class="btn btn-danger" onclick="leave()">Leave</button>
+    </div>
     <div class="table-responsive" style="max-width: 960px">
         <table class="table table-striped">
             <tr class="active"><th>Username</th><th>Points</th></tr>
-            <%users.forEach(function(item,index) {%>
-            <tr><td><%=item.username%></td><td><%=item.points%></td></tr>
-            <%})%>
         </table>
     </div>
     <%}%>
 </div>
+<h1></h1>
+<%if(session.passport && session.passport.user){%>
+    <script type="text/javascript">
+        socket.emit('waiting',{user:{_id:'<%=session.passport.user._id%>',name:'<%=session.passport.user.name%>',points:<%=session.passport.user.points%>}});
+        console.log('<%=session.passport.user.name%>');
+        $('h1').html("<%=session.passport.user.name%>");
+    </script>
+<%}%>
 </body>
 </html>

@@ -7,13 +7,16 @@ var bodyParser = require('body-parser');
 var expressSession = require('express-session');
 var passport = require('passport');
 var flash = require('connect-flash');
+var socket_io    = require( 'socket.io' );
 var mongoose = require('mongoose');
+var readyUser = require('./models/ready_users');
 mongoose.connect('mongodb://127.0.0.1:27017/chessweb');
 
 var index = require('./routes/index');
 
 var app = express();
-
+var io = socket_io();
+app.io = io;
 
 app.locals.projectname = "ChessWeb";
 
@@ -55,6 +58,43 @@ app.use(function(err, req, res, next) {
   // render the error page
   res.status(err.status || 500);
   res.render('error');
+});
+
+var users=0;
+io.on('connection', function(socket){
+    readyUser.count({},function(err,count){
+        io.sockets.emit('users',{count:count + ' users are online'});
+    });
+    socket.on('waiting',function (data) {
+            console.log(data);
+            users++;
+            socket.broadcast.emit('newUser',{user:data.user});
+            if(data.user){
+                var readyuser = new readyUser({
+                    "_id":data.user._id,
+                    "username":data.user.name,
+                    "points":data.user.points
+                });
+                readyuser.save(function (err, updated) {
+                    if (err) console.log(err);
+                });
+            }
+        readyUser.count({},function(err,count){
+            io.sockets.emit('users',{count:count + ' users are online'});
+        });
+    });
+    //Whenever someone disconnects this piece of code executed
+    socket.on('leave',function (data) {
+        readyUser.findOneAndRemove({_id : data.user._id}, function (err,updated){
+            if(err) console.log(err);
+        });
+        readyUser.count({},function(err,count){
+            io.sockets.emit('users',{count:count + ' users are online'});
+        });
+    });
+    socket.on('disconnect', function () {
+        io.sockets.emit('users',{count:users + ' users are online'});
+    });
 });
 
 module.exports = app;
